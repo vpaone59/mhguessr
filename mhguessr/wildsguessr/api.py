@@ -6,7 +6,7 @@ from datetime import date
 from typing import List, Optional
 
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
 from ninja import NinjaAPI, Schema
 
@@ -43,10 +43,10 @@ class GameStatusResponse(Schema):
     guesses: List[dict]
 
 
-@api.get("/daily-status", response=GameStatusResponse)
+@api.get("/daily-status")
 def get_puzzle_status(request):
     """
-    Get daily puzzle status for the user
+    Get daily puzzle status for the user - returns HTML for HTMX
     """
     today = date.today()
 
@@ -62,9 +62,7 @@ def get_puzzle_status(request):
     # Convert guesses to dict format for template
     guess_list = []
     for guess in guesses:
-        feedback = (
-            "correct" if guess.is_correct else "incorrect"
-        )  # You may want to implement closer/further logic
+        feedback = "correct" if guess.is_correct else "incorrect"
         guess_list.append(
             {
                 "guess_number": guess.guess_number,
@@ -74,15 +72,20 @@ def get_puzzle_status(request):
             }
         )
 
-    return GameStatusResponse(
-        puzzle_id=puzzle.id,
-        item_=puzzle.monster.name if puzzle.monster else "Unknown Monster",
-        guesses_made=session.guesses_count,
-        max_guesses=8,  # Based on your template: "Guess the monster in 8 tries or less"
-        is_completed=session.is_completed,
-        is_won=session.is_won,
-        guesses=guess_list,
-    )
+    context = {
+        "puzzle_id": puzzle.id,
+        "item_": puzzle.monster.name if puzzle.monster else "Unknown Monster",
+        "guesses_made": session.guesses_count,
+        "max_guesses": 8,
+        "is_completed": session.is_completed,
+        "is_won": session.is_won,
+        "guesses": guess_list,
+        "correct_answer": puzzle.monster.name
+        if session.is_completed and not session.is_won
+        else None,
+    }
+
+    return render(request, "wildsguessr/partials/game_status.html", context)
 
 
 @api.post("/daily-guess", response=GuessResponse)
