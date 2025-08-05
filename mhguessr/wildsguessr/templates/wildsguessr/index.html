@@ -1,0 +1,55 @@
+{% extends 'wildsguessr/base.html' %}
+{% block content %}
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <!-- Daily Challenge Header Card -->
+                <div class="card mb-4">
+                    <div class="card-body text-center">
+                        <h2 class="card-title">Daily Challenge</h2>
+                        <p class="card-text text-muted">{{ puzzle.date|date:"F j, Y" }}</p>
+                        <p class="card-text">Guess the monster in 8 tries or less</p>
+                    </div>
+                </div>
+                <!-- Game Card -->
+                <div class="card">
+                    <div class="card-body">
+                        <!-- Monster Description -->
+                        <div class="text-center mb-4">
+                            <div class="bg-light rounded p-3">{{ puzzle.monster.description }}</div>
+                        </div>
+                        <!-- Guess Form -->
+                        <div class="mb-4">
+                            <form hx-post="/api/game/daily-guess"
+                                  hx-target="#game-status"
+                                  hx-swap="outerHTML"
+                                  hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+                                <div class="input-group">
+                                    <input type="text"
+                                           name="guess"
+                                           class="form-control"
+                                           placeholder="Enter your guess..."
+                                           required
+                                           maxlength="255">
+                                    <button type="submit" class="btn btn-primary">Guess</button>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- Game Status -->
+                        <div hx-get="/api/game/daily-status"
+                             hx-trigger="load"
+                             hx-target="#game-status"
+                             id="game-status">
+                            <div class="text-center py-4">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="text-muted mt-2">Loading game status...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

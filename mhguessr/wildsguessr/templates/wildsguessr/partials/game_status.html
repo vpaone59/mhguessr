@@ -1,0 +1,38 @@
+<div id="game-status">
+    <div class="text-center mb-4">
+        <span class="text-lg font-semibold">Guesses: {{ guesses_made }}/{{ max_guesses }}</span>
+    </div>
+    <div id="guess-history" class="space-y-2 mb-4">
+        {% for guess in guesses %}
+            <div class="p-3 rounded-lg border-2 {% if guess.feedback == 'correct' %}bg-green-100 border-green-500 text-green-800 {% elif guess.feedback == 'closer' %}bg-blue-100 border-blue-500 text-blue-800 {% elif guess.feedback == 'further' %}bg-red-100 border-red-500 text-red-800 {% else %}bg-gray-100 border-gray-500 text-gray-800{% endif %}">
+                <div class="flex justify-between items-center">
+                    <span class="font-medium">{{ guess.guess_number }}. {{ guess.guess }}</span>
+                    <span class="text-sm">
+                        {% if guess.feedback == 'correct' %}
+                            <span class="text-green-600">Correct!</span>
+                        {% elif guess.feedback == 'closer' %}
+                            <span class="text-blue-600">Getting closer</span>
+                        {% elif guess.feedback == 'further' %}
+                            <span class="text-red-600">Getting further</span>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% if is_completed %}
+        <div id="game-over"
+             class="text-center p-4 rounded-lg {% if is_won %}bg-green-50 border border-green-200 {% else %}bg-red-50 border border-red-200{% endif %}">
+            {% if is_won %}
+                <h3 class="text-2xl font-bold text-green-600 mb-2">Congratulations!</h3>
+                <p class="text-green-700">You guessed it correctly!</p>
+            {% else %}
+                <h3 class="text-2xl font-bold text-red-600 mb-2">Game Over!</h3>
+                <p class="text-red-700">
+                    The answer was: <strong>{{ correct_answer }}</strong>
+                </p>
+            {% endif %}
+            <p class="text-gray-600 mt-4">Come back tomorrow for a new challenge!</p>
+        </div>
+    {% endif %}
+</div>
