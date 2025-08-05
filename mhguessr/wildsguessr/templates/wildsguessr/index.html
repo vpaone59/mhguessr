@@ -20,7 +20,7 @@
                         </div>
                         <!-- Guess Form -->
                         <div class="mb-4">
-                            <form hx-post="/api/game/daily-guess"
+                            <form hx-post="/api/puzzle/daily-guess"
                                   hx-target="#game-status"
                                   hx-swap="outerHTML"
                                   hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
@@ -36,15 +36,17 @@
                             </form>
                         </div>
                         <!-- Game Status -->
-                        <div hx-get="/api/game/daily-status"
+                        <div hx-get="/api/puzzle/daily-status"
                              hx-trigger="load"
                              hx-target="#game-status"
+                             hx-indicator="#game-status-spinner"
                              id="game-status">
                             <div class="text-center py-4">
-                                <div class="spinner-border text-primary" role="status">
+                                <div class="spinner-border text-primary htmx-indicator"
+                                     role="status"
+                                     id="game-status-spinner">
                                     <span class="visually-hidden">Loading...</span>
                                 </div>
-                                <p class="text-muted mt-2">Loading game status...</p>
                             </div>
                         </div>
                     </div>

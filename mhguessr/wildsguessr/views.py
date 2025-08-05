@@ -4,6 +4,7 @@ from django.shortcuts import render
 
 from wildsguessr.models.monster import Monster
 from wildsguessr.models.puzzle import Puzzle
+from wildsguessr.models.user_game_session import UserGameSession
 
 
 def index(request):
@@ -41,3 +42,25 @@ def get_or_create_daily_puzzle() -> Puzzle:
 
     print("Today's puzzle:", puzzle)
     return puzzle
+
+
+def get_or_create_session(request, puzzle):
+    """
+    Get or create a user game session for the given puzzle
+    """
+    if request.user.is_authenticated:
+        session, created = UserGameSession.objects.get_or_create(
+            user=request.user, puzzle=puzzle, defaults={"session_key": None}
+        )
+    else:
+        # Handle anonymous users with session key
+        session_key = request.session.session_key
+        if not session_key:
+            request.session.create()
+            session_key = request.session.session_key
+
+        session, created = UserGameSession.objects.get_or_create(
+            session_key=session_key, puzzle=puzzle, defaults={"user": None}
+        )
+
+    return session
