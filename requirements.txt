@@ -3,3 +3,6 @@ django-ninja==1.4.3
 requests==2.32.4
 python-dotenv==1.1.1
 djlint==1.36.4
+djangorestframework==3.16.0
+django-template-partials==24.4
+django-htmx==1.23.2

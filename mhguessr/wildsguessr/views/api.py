@@ -14,7 +14,7 @@ from wildsguessr.models.puzzle import Puzzle
 from wildsguessr.models.user_game_session import UserGameSession
 from wildsguessr.models.user_guess import UserGuess
 from wildsguessr.services import MHWildsAPIService
-from wildsguessr.views import get_or_create_session
+from wildsguessr.views.views import get_or_create_session
 
 api = NinjaAPI(csrf=True)
 
@@ -44,7 +44,7 @@ class GameStatusResponse(Schema):
 
 
 @api.get("/daily-status")
-def get_puzzle_status(request):
+def get_user_puzzle_status(request):
     """
     Get daily puzzle status for the user - returns HTML for HTMX
     """
@@ -84,20 +84,19 @@ def get_puzzle_status(request):
         if session.is_completed and not session.is_won
         else None,
     }
-
+    print(context)
     return render(request, "wildsguessr/partials/game_status.html", context)
 
 
 @api.post("/daily-guess", response=GuessResponse)
 def submit_daily_guess(request):
     """
-    Make a guess for the daily puzzle
+    Submit a user's guess for the daily puzzle
     """
-    # guess = request.POST.get("guess", "").strip()
-    # if not guess:
-    #     return HttpResponse("Invalid guess", status=400)
+    guess = request.POST.get("guess", "").strip()
+    if not guess:
+        return HttpResponse("Invalid guess", status=400)
 
-    # today = date.today()
-    # puzzle = get_object_or_404(Puzzle, date=today)
-    # session = get_or_create_session(request, puzzle)
-    pass
+    today = date.today()
+    puzzle = get_object_or_404(Puzzle, date=today)
+    session = get_or_create_session(request, puzzle)

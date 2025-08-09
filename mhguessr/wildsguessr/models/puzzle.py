@@ -24,4 +24,4 @@ class Puzzle(models.Model):
         ordering = ["-date"]
 
     def __str__(self):
-        return f"Puzzle for {self.date}: {self.monster.name if self.monster else 'Unknown Monster'}"
+        return f"Puzzle for {self.date}: {self.monster.name}"

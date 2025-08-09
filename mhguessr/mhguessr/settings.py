@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "wildsguessr",
+    "rest_framework",
+    "template_partials",
 ]
 
 MIDDLEWARE = [
@@ -128,3 +130,12 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # MH Wilds API Configuration
 MHWILDS_API_BASE_URL = "https://wilds.mhdb.io/en/"
+
+# DRF Settings
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    # "DEFAULT_PERMISSION_CLASSES": [
+    #     "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
+    # ]
+}
